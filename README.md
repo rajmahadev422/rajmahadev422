@@ -35,15 +35,15 @@ I am a B.Tech student based in Dhanbad, passionate about building scalable web a
 ---
 
 ### 📈 GitHub Stats
-![Your GitHub Stats](https://github-readme-stats.vercel.app/api?username=yourusername&show_icons=true&theme=radical)
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=yourusername&layout=compact&theme=radical)
+![Your GitHub Stats](https://github-readme-stats.vercel.app/api?username=rajmahadev422&show_icons=true&theme=radical)
+![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=rajmahadev422&layout=compact&theme=radical)
 
 ---
 
 ### 📫 Connect with me:
-* **LinkedIn:** [linkedin.com/in/yourprofile](https://linkedin.com/in/yourprofile)
+* **LinkedIn:** [https://www.linkedin.com/in/mahadev-kumar-15b2ba320)
 * **Portfolio:** [Your Portfolio Link]
-* **LeetCode/CodeChef:** [Your Profile Link]
+* **CodeChef:** [[Your Profile Link](https://www.codechef.com/users/mahadev_422)]
 
 ---
 *"Building things that solve problems, one commit at a time."*
