@@ -16,15 +16,11 @@ I am a B.Tech student based in Dhanbad, passionate about building scalable web a
 
 ### 🛠️ Featured Projects
 
-#### [Campus Management System](https://github.com/your-link)
+#### [Campus Management System](https://github.com/rajmahadev422/Campus.git)
 * A full-stack management platform built with the **MERN Stack**.
 * Optimized performance using **Vite** and implemented secure **JWT-based authentication**.
 
-#### [GitHub AI Automator](https://github.com/your-link)
-* An LLM-powered bot using **Gemini API** and **GitHub Actions** to automate issue labeling.
-* Implemented a **RAG** pipeline to categorize developer queries based on repository context.
-
-#### [Vehicle Classification Model](https://github.com/your-link)
+#### [Vehicle Classification Model](https://github.com/rajmahadev422/Vehicle-Predictor.git)
 * Developed a **CNN** in **PyTorch** for real-time vehicle recognition.
 * Deployed a **FastAPI** backend to handle image inference and classification.
 
