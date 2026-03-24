@@ -41,7 +41,7 @@ I am a B.Tech student based in Dhanbad, passionate about building scalable web a
 ---
 
 ### 📫 Connect with me:
-* **LinkedIn:** [Mahadev Kumar]https://www.linkedin.com/in/mahadev-kumar-15b2ba320)
+* **LinkedIn:** [Mahadev Kumar](https://www.linkedin.com/in/mahadev-kumar-15b2ba320)
 * **Portfolio:** [Portfolio Link](https://portfolio-tau-three-ozpwygtbtt.vercel.app/)
 * **CodeChef:** [Profile Link](https://www.codechef.com/users/mahadev_422)
 
