@@ -28,9 +28,7 @@ I am a B.Tech student based in Dhanbad, passionate about building scalable web a
 
 ### 🌟 Open Source Contributions
 
-* **OpenCV:** Authored a technical tutorial for **building OpenCV from source**.
-* Standardized build documentation using **Doxygen syntax** and Markdown.
-* Worked on resolving build errors related to **CMake** and documentation generation.
+* **OpenCV:** Add doc for building **OpenCV** from source code on windows.
 
 ---
 
