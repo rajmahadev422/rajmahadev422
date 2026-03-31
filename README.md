@@ -1,7 +1,7 @@
 # Hi, I'm Mahadev Kumar 👋
 ### Full-Stack Developer | AI Enthusiast | Open-Source Contributor
 
-I am a B.Tech student based in Dhanbad, passionate about building scalable web applications and exploring the intersection of Computer Vision and Large Language Models. Currently, I'm focusing on the **MERN Stack**, **PyTorch**, and contributing to the **OpenCV** ecosystem.
+I am an engineering student persuing Batchelor of Technology at Dhanbad, passionate about building scalable web applications and exploring the intersection of Computer Vision and Large Language Models. Currently, I'm focusing on the **MERN Stack**, **PyTorch**, and contributing to the **OpenCV** ecosystem.
 
 ---
 
