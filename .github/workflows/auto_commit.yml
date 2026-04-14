@@ -2,11 +2,11 @@ name: Auto Commit JSON Log
 
 on:
   schedule:
-    - cron: "0 1,5,9,13,17 * * *"
+    - cron: "0 1,5,9,13,17 * * *"  # 5 times daily (UTC)
   workflow_dispatch:
 
 permissions:
-  contents: write   # 🔥 THIS FIXES YOUR ERROR
+  contents: write
 
 jobs:
   update-json:
@@ -25,22 +25,32 @@ jobs:
         run: |
           FILE="log.json"
 
+          # Create file if not exists
           if [ ! -f "$FILE" ]; then
             echo "[]" > $FILE
           fi
 
+          # Generate values
           DATE=$(date '+%Y-%m-%d')
           DAY=$(date '+%A')
           TIME=$(date '+%H:%M:%S')
 
+          # Update JSON safely
           jq --arg date "$DATE" \
              --arg day "$DAY" \
              --arg time "$TIME" \
-             '. += [{"date": $date, "day": $day, "time": $time}]' \
+             '. += [{"date": $date, "day": $day, "time": $time}] | .[-100:]' \
              $FILE > tmp.json && mv tmp.json $FILE
 
-      - name: Commit & Push
+      - name: Commit and Push with Retry
         run: |
           git add log.json
           git commit -m "Update JSON log: $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes"
-          git push
+
+          # Retry push up to 3 times
+          for i in 1 2 3
+          do
+            git pull origin main --rebase && git push origin main && break
+            echo "Retry $i..."
+            sleep 2
+          done
