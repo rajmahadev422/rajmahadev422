@@ -2,8 +2,11 @@ name: Auto Commit JSON Log
 
 on:
   schedule:
-    - cron: "0 1,5,9,13,17 * * *"  # 5 times daily (UTC)
+    - cron: "0 1,5,9,13,17 * * *"
   workflow_dispatch:
+
+permissions:
+  contents: write   # 🔥 THIS FIXES YOUR ERROR
 
 jobs:
   update-json:
@@ -22,17 +25,14 @@ jobs:
         run: |
           FILE="log.json"
 
-          # Create file if not exists
           if [ ! -f "$FILE" ]; then
             echo "[]" > $FILE
           fi
 
-          # Generate values
           DATE=$(date '+%Y-%m-%d')
           DAY=$(date '+%A')
           TIME=$(date '+%H:%M:%S')
 
-          # Add new JSON entry using jq
           jq --arg date "$DATE" \
              --arg day "$DAY" \
              --arg time "$TIME" \
