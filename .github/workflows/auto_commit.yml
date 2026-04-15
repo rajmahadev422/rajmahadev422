@@ -2,7 +2,7 @@ name: Smart Auto Logger
 
 on:
   schedule:
-    - cron: "0 * * * *"   # runs every hour
+    - cron: "0 * * * *"   # every hour
   workflow_dispatch:
 
 permissions:
@@ -23,10 +23,10 @@ jobs:
 
       - name: Prepare Files
         run: |
-          [ -f log.json ] || echo "[]" > log.json
+          [ -f log.json ] || echo "{}" > log.json
           [ -f meta.json ] || echo "{}" > meta.json
 
-      - name: Generate Daily Target (at 1 AM UTC)
+      - name: Generate Daily Target (1 AM UTC)
         run: |
           HOUR=$(date -u '+%H')
 
@@ -38,10 +38,10 @@ jobs:
               '.date=$date | .target=$target | .count=0' \
               meta.json > tmp.json && mv tmp.json meta.json
 
-            echo "New target for today: $TARGET"
+            echo "New target: $TARGET"
           fi
 
-      - name: Decide to Log or Skip
+      - name: Decide Logging
         run: |
           DATE=$(date -u '+%Y-%m-%d')
           HOUR=$(date -u '+%H')
@@ -50,22 +50,19 @@ jobs:
           TARGET=$(jq -r '.target // 5' meta.json)
           COUNT=$(jq -r '.count // 0' meta.json)
 
-          # If meta is missing or outdated, force minimum 5
+          # fallback if new day not initialized
           if [ "$META_DATE" != "$DATE" ]; then
             TARGET=5
             COUNT=0
           fi
 
-          # Remaining hours today
           REMAINING=$((24 - 10#$HOUR))
-
-          # Force logging if needed to reach minimum
           MUST_LOG=0
+
           if [ $((TARGET - COUNT)) -ge $REMAINING ]; then
             MUST_LOG=1
           fi
 
-          # Random decision
           SHOULD_LOG=$((RANDOM % 2))
 
           if [ "$SHOULD_LOG" -eq 1 ] || [ "$MUST_LOG" -eq 1 ]; then
@@ -74,31 +71,34 @@ jobs:
             echo "LOG=false" >> $GITHUB_ENV
           fi
 
-      - name: Update Log JSON (Daily Append)
+      - name: Update Log JSON (Daily Grouped)
         if: env.LOG == 'true'
         run: |
           FILE="log.json"
-      
+
           DATE=$(date '+%Y-%m-%d')
           DAY=$(date '+%A')
           TIME=$(date '+%H:%M:%S')
-      
+
           # Ensure file exists
           [ -f "$FILE" ] || echo "{}" > $FILE
-      
-          # Append under today's date
+
+          # Convert array → object if needed
+          jq 'if type=="array" then {} else . end' $FILE > tmp.json && mv tmp.json $FILE
+
+          # Append log under date
           jq --arg date "$DATE" \
              --arg day "$DAY" \
              --arg time "$TIME" \
              '
-             .[$date] = (.[$date] // []) + [{"day": $day, "time": $time}]
+             .[$date] = ((.[$date] // []) + [{"day": $day, "time": $time}])[-20:]
              ' \
              $FILE > tmp.json && mv tmp.json $FILE
 
-      - name: Commit & Push
+      - name: Commit & Push (Safe)
         run: |
           git add log.json meta.json
-          git commit -m "Smart log update: $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes"
+          git commit -m "Smart log: $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes"
 
           for i in 1 2 3
           do
