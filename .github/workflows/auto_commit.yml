@@ -1,15 +1,15 @@
-name: Auto Commit JSON Log
+name: Smart Auto Logger
 
 on:
   schedule:
-    - cron: "0 1,5,9,13,17 * * *"  # 5 times daily (UTC)
+    - cron: "0 * * * *"   # runs every hour
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  update-json:
+  smart-log:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,33 +21,83 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
 
-      - name: Update JSON File
+      - name: Prepare Files
         run: |
-          FILE="log.json"
+          [ -f log.json ] || echo "[]" > log.json
+          [ -f meta.json ] || echo "{}" > meta.json
 
-          # Create file if not exists
-          if [ ! -f "$FILE" ]; then
-            echo "[]" > $FILE
+      - name: Generate Daily Target (at 1 AM UTC)
+        run: |
+          HOUR=$(date -u '+%H')
+
+          if [ "$HOUR" = "01" ]; then
+            TARGET=$((RANDOM % 11 + 5))  # 5–15
+            DATE=$(date -u '+%Y-%m-%d')
+
+            jq --arg date "$DATE" --argjson target $TARGET \
+              '.date=$date | .target=$target | .count=0' \
+              meta.json > tmp.json && mv tmp.json meta.json
+
+            echo "New target for today: $TARGET"
           fi
 
-          # Generate values
+      - name: Decide to Log or Skip
+        run: |
+          DATE=$(date -u '+%Y-%m-%d')
+          HOUR=$(date -u '+%H')
+
+          META_DATE=$(jq -r '.date // empty' meta.json)
+          TARGET=$(jq -r '.target // 5' meta.json)
+          COUNT=$(jq -r '.count // 0' meta.json)
+
+          # If meta is missing or outdated, force minimum 5
+          if [ "$META_DATE" != "$DATE" ]; then
+            TARGET=5
+            COUNT=0
+          fi
+
+          # Remaining hours today
+          REMAINING=$((24 - 10#$HOUR))
+
+          # Force logging if needed to reach minimum
+          MUST_LOG=0
+          if [ $((TARGET - COUNT)) -ge $REMAINING ]; then
+            MUST_LOG=1
+          fi
+
+          # Random decision
+          SHOULD_LOG=$((RANDOM % 2))
+
+          if [ "$SHOULD_LOG" -eq 1 ] || [ "$MUST_LOG" -eq 1 ]; then
+            echo "LOG=true" >> $GITHUB_ENV
+          else
+            echo "LOG=false" >> $GITHUB_ENV
+          fi
+
+      - name: Update Log JSON
+        if: env.LOG == 'true'
+        run: |
           DATE=$(date '+%Y-%m-%d')
           DAY=$(date '+%A')
           TIME=$(date '+%H:%M:%S')
 
-          # Update JSON safely
           jq --arg date "$DATE" \
              --arg day "$DAY" \
              --arg time "$TIME" \
              '. += [{"date": $date, "day": $day, "time": $time}] | .[-100:]' \
-             $FILE > tmp.json && mv tmp.json $FILE
+             log.json > tmp.json && mv tmp.json log.json
 
-      - name: Commit and Push with Retry
+      - name: Update Meta Count
+        if: env.LOG == 'true'
         run: |
-          git add log.json
-          git commit -m "Update JSON log: $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes"
+          COUNT=$(jq '.count + 1' meta.json)
+          jq --argjson count $COUNT '.count = $count' meta.json > tmp.json && mv tmp.json meta.json
 
-          # Retry push up to 3 times
+      - name: Commit & Push
+        run: |
+          git add log.json meta.json
+          git commit -m "Smart log update: $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes"
+
           for i in 1 2 3
           do
             git pull origin main --rebase && git push origin main && break
