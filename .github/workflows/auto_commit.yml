@@ -74,24 +74,26 @@ jobs:
             echo "LOG=false" >> $GITHUB_ENV
           fi
 
-      - name: Update Log JSON
+      - name: Update Log JSON (Daily Append)
         if: env.LOG == 'true'
         run: |
+          FILE="log.json"
+      
           DATE=$(date '+%Y-%m-%d')
           DAY=$(date '+%A')
           TIME=$(date '+%H:%M:%S')
-
+      
+          # Ensure file exists
+          [ -f "$FILE" ] || echo "{}" > $FILE
+      
+          # Append under today's date
           jq --arg date "$DATE" \
              --arg day "$DAY" \
              --arg time "$TIME" \
-             '. += [{"date": $date, "day": $day, "time": $time}] | .[-100:]' \
-             log.json > tmp.json && mv tmp.json log.json
-
-      - name: Update Meta Count
-        if: env.LOG == 'true'
-        run: |
-          COUNT=$(jq '.count + 1' meta.json)
-          jq --argjson count $COUNT '.count = $count' meta.json > tmp.json && mv tmp.json meta.json
+             '
+             .[$date] = (.[$date] // []) + [{"day": $day, "time": $time}]
+             ' \
+             $FILE > tmp.json && mv tmp.json $FILE
 
       - name: Commit & Push
         run: |
