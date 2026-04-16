@@ -94,7 +94,13 @@ jobs:
              .[$date] = ((.[$date] // []) + [{"day": $day, "time": $time}])[-20:]
              ' \
              $FILE > tmp.json && mv tmp.json $FILE
-
+             
+      - name: Update Meta Count
+        if: env.LOG == 'true'
+        run: |
+          COUNT=$(jq '.count + 1' meta.json)
+          jq --argjson count $COUNT '.count = $count' meta.json > tmp.json && mv tmp.json meta.json
+          
       - name: Commit & Push (Safe)
         run: |
           git add log.json meta.json
