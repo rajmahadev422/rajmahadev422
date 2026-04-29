@@ -54,6 +54,6 @@ I am an engineering student persuing Batchelor of Technology at Dhanbad, passion
 
 ---
 
-<div align="center">
-  *"Building things that solve problems, one commit at a time."*
+<div align="center" style="te">
+  <i>"Building things that solve problems, one commit at a time."</i>
 </div>
