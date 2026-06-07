@@ -12,3 +12,4 @@ jobs:
       - name: Ping Website
         run: |
           curl https://campus-hg1f.onrender.com
+          curl https://compiler-kalm.onrender.com
