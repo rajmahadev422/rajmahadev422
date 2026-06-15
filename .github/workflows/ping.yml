@@ -9,7 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Ping Website
+      - name: Ping Campus Website
         run: |
           curl https://campus-hg1f.onrender.com
+          
+      - name: Ping CPP Compiler
+        run: |
           curl https://compiler-kalm.onrender.com
