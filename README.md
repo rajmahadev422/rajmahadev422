@@ -17,8 +17,8 @@ I am an engineering student persuing Batchelor of Technology at Dhanbad, passion
 
 * **Languages:** C++ (Competitive Programming), JavaScript (ES6+), Python, HTML5/CSS3
 * **Web Development:** React.js, Node.js, Express.js, MongoDB, Redux, Vite, Tailwind CSS
-* **AI & Machine Learning:** LLMs (Gemini API), RAG Systems, PyTorch (CNNs), OpenCV, LangChain
-* **Tools & DevOps:** Git, GitHub Actions (CI/CD), Linux, Postman, Doxygen, CMake
+* **AI & Machine Learning:** LLMs (Gemini API), RAG Systems, PyTorch (CNNs), OpenCV, LangChain, Ollama.
+* **Tools & DevOps:** Git, GitHub Actions (CI/CD), Linux, Postman.
 
 ---
 
