@@ -9,9 +9,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Ping Campus Website
+      - name: Ping typeblitz Website
         run: |
-          curl https://campus-hg1f.onrender.com
+          curl https://typeblitz-qpeu.onrender.com
           
       - name: Ping CPP Compiler
         run: |
